@@ -5,8 +5,7 @@
 # Credentials
 resources/fitbitCredentials/credentials.txt
 # Persoonlijke data
-resources/persoonlijke data
-
+resources/persoonlijke_data/hoofdpijndagboek.numbers
 #cdk.out
 cdk.out/.cache
 
