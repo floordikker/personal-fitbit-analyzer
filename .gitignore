@@ -3,7 +3,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,pydev,pycharm+all,jupyternotebooks,venv,vscode,visualstudiocode,macos,vim,emacs,linux,windows
 
 # Credentials
-resources/fitbitCredentials
+resources/fitbitCredentials/credentials.txt
+# Persoonlijke data
+resources/persoonlijke data
 
 #cdk.out
 cdk.out/.cache
@@ -12,3 +14,5 @@ cdk.out/.cache
 # -*- mode: gitignore; -*-
 .DS_Store
 .idea
+/.DS_Store
+/.idea
