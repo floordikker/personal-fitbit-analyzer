@@ -2,14 +2,26 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { ProcessingDataStack } from '../lib/ProcessingDataStack';
-import {baseEnv} from '../lib/_config';
+import { DataStorageStack } from '../lib/DataStorageStack';
+
 
 const app = new cdk.App();
 
-const shared = new ProcessingDataStack(
+const dataStorageStack = new DataStorageStack(
+    app,
+    "DataStorageStack",
+    {
+        stackName: `data-storage-stack`,
+    },
+);
+
+const processingDataStack = new ProcessingDataStack(
     app,
     "ProcessingDataStack",
     {
-        ...baseEnv
+        stackName: `data-processing-stack`,
+        bucket: dataStorageStack.bucket
     },
 );
+
+

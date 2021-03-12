@@ -5,8 +5,22 @@ import * as targets from '@aws-cdk/aws-events-targets';
 import * as s3 from '@aws-cdk/aws-s3'
 import * as s3deploy from '@aws-cdk/aws-s3-deployment';
 
+export interface ProcessingDataStackProps
+    extends cdk.StackProps {
+    bucket: s3.IBucket;
+}
+
 
 export class ProcessingDataStack extends cdk.Stack {
+
+    /**
+     *
+     * @param scope
+     * @param id
+     * @param props
+     */
+
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
   
