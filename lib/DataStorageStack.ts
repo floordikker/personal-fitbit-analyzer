@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
+import * as kms from '@aws-cdk/aws-kms';
 
 export class DataStorageStack extends cdk.Stack {
 

@@ -11,7 +11,8 @@ import os
 s3 = boto3.client('s3')
 
 # environmental variables
-bucketName = os.environ['S3_BUCKET']
+sourceBucket = os.environ['S3_SOURCE_BUCKET']
+destinationBucket = os.environ['S3_DESTINATION_BUCKET']
 fitbitCredentials = os.environ['FITBIT_CREDENTIALS_FILE']
 
 def getting_week_dates():
@@ -22,9 +23,9 @@ def getting_week_dates():
     today = weekDates[6]
     return weekDates, aWeekAgo, today
 
-def read_data_from_S3(bucketName, fileKey):
-    """Read file with name fileKey from bucket with name bucketName"""
-    s3Obj = s3.get_object(Bucket=bucketName, Key=fileKey)
+def read_data_from_S3(sourceBucket, fileKey):
+    """Read file with name fileKey from bucket with name sourceBucket"""
+    s3Obj = s3.get_object(Bucket=sourceBucket, Key=fileKey)
     s3Data = s3Obj['Body'].read().decode('utf-8')
     jsonContent = json.loads(s3Data)
     return jsonContent
@@ -42,7 +43,7 @@ def lambda_handler(event, context):
     ## input variabelen
     variabelen = event
     # Fibit credentials
-    myCredentials = read_data_from_S3(bucketName, fitbitCredentials)['CREDENTIALS']
+    myCredentials = read_data_from_S3(sourceBucket, fitbitCredentials)['CREDENTIALS']
     data = getting_sleep_data(myCredentials)
     return {
         'statusCode': 200,
