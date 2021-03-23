@@ -15,3 +15,4 @@ cdk.out/*
 .idea
 /.DS_Store
 /.idea
+.vscode/*
