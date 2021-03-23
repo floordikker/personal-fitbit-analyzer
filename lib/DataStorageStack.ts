@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
+import * as kms from '@aws-cdk/aws-kms';
 
 export class DataStorageStack extends cdk.Stack {
 
@@ -11,10 +12,6 @@ export class DataStorageStack extends cdk.Stack {
    * @param id
    * @param props
    */
-
-
-
-
 
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {

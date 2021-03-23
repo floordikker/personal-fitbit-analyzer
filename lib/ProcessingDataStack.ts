@@ -21,7 +21,7 @@ export class ProcessingDataStack extends cdk.Stack {
      */
 
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: ProcessingDataStackProps) {
     super(scope, id, props);
   
     // bucket with Fitbit credentials saved
@@ -60,13 +60,14 @@ export class ProcessingDataStack extends cdk.Stack {
         },
       }),
       environment: {
-        'S3_BUCKET': sourceBucket.bucketName,
-        'FITBIT_CREDENTIALS_FILE': 'credentials.txt'
+        'S3_SOURCE_BUCKET': sourceBucket.bucketName,
+        'FITBIT_CREDENTIALS_FILE': 'credentials.txt',
+        'S3_DESTINATION_BUCKET': props.bucket.bucketName,
       }
     });
-    // Grand read access to bucket
+    // Grand read access to source bucket and destination bucket
     sourceBucket.grantRead(myLambda);
-
+    props.bucket.grantReadWrite(myLambda);
 
     // Defined schedule
     const mySchedule = events.Schedule.expression('cron(0 9 ? * 2#1 *)')
