@@ -75,6 +75,7 @@ def getting_sleep_data(myCredentials, startDate, endDate):
     response = requests.get(http_request_get_test, headers=headers)
     responseJson = response.json()
     return responseJson
+    
 
 def parsing_sleep_data(response, targetBucket, weekDates, endDate):
     """Parsing useful information from API Response and saving it to targetBucket"""
@@ -98,7 +99,7 @@ def parsing_sleep_data(response, targetBucket, weekDates, endDate):
 
 def lambda_handler(event, context):
     variabelen = event
-    weekDates, startDate, endDate = getting_week_dates('2021-02-01', '2021-03-20')
+    weekDates, startDate, endDate = getting_week_dates()
     myCredentials = read_data_from_S3_as_text(sourceBucket, fitbitCredentials)['CREDENTIALS']
     response = getting_sleep_data(myCredentials, startDate, endDate)
     mySleepRecords = parsing_sleep_data(response, targetBucket, weekDates, endDate)
