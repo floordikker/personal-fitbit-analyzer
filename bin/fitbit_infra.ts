@@ -21,7 +21,6 @@ const processingDataStack = new ProcessingDataStack(
     {
         stackName: `data-processing-stack`,
         bucket: dataStorageStack.bucket
-        
     },
 );
 
