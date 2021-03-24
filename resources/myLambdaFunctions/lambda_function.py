@@ -68,17 +68,18 @@ def read_process_and_write(targetBucket, fileKey, myRecords):
         write_data_to_S3(targetBucket, fileKey, myRecords)
 
 
-def getting_sleep_data(myCredentials, startDate, endDate):
-    """GET request for sleep data"""
+def getting_data(myCredentials, url, startDate, endDate):
+    """GET request for given url from startDate to endDate"""
     headers = {"Authorization" : "Bearer " + myCredentials["ACCES_TOKEN"]}
-    http_request_get_test = "https://api.fitbit.com/1.2/user/-/sleep/date/" + startDate + '/' + endDate + '.json'
+    http_request_get_test = url + startDate + '/' + endDate + '.json'
     response = requests.get(http_request_get_test, headers=headers)
     responseJson = response.json()
     return responseJson
     
 
-def parsing_sleep_data(response, targetBucket, weekDates, endDate):
+def parsing_sleep_data(myCredentials, targetBucket, weekDates, startDate, endDate):
     """Parsing useful information from API Response and saving it to targetBucket"""
+    response = getting_data(myCredentials, "https://api.fitbit.com/1.2/user/-/sleep/date/" , startDate, endDate)
     mySleep = response['sleep']
     myKeys = ['dateOfSleep', 'minutesAfterWakeup', 'minutesAsleep', 'minutesAwake', 'minutesToFallAsleep', 'startTime', 'timeInBed', 'efficiency', 'duration', 'dateOfSleep']
     myRecords = pd.DataFrame()
@@ -97,12 +98,15 @@ def parsing_sleep_data(response, targetBucket, weekDates, endDate):
             continue
     return myRecords
 
+def parsing_heart_rate_data(myCredentials, targetBucket, weekDates, startDate, endDate):
+    response = getting_data(myCredentials, "https://api.fitbit.com/1.2/user/-/activities/heart/date/" , startDate, endDate)
+
+
 def lambda_handler(event, context):
     variabelen = event
     weekDates, startDate, endDate = getting_week_dates()
     myCredentials = read_data_from_S3_as_text(sourceBucket, fitbitCredentials)['CREDENTIALS']
-    response = getting_sleep_data(myCredentials, startDate, endDate)
-    mySleepRecords = parsing_sleep_data(response, targetBucket, weekDates, endDate)
+    mySleepRecords = parsing_sleep_data(myCredentials, targetBucket, weekDates, startDate, endDate)
     contents = read_process_and_write(targetBucket, 'mySleepData.csv', mySleepRecords)
     return {
         'statusCode': 200
