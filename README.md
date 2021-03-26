@@ -1,12 +1,19 @@
-# Welcome to your CDK TypeScript project!
+# My own fitbit dasbhoard on AWS QuickSight
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+This project contains code to set up a dashboard containing FitBit data and personal health data.
+The goal of this project has been to provide more insight into long term correlations and see whether trends exists.
 
-## Useful commands
+## Set up
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+The infrastructure is written in Typescript and the runtime code is written in Python. 
+The infrastructure contains:
+* S3 Bucket to host data needed to interact with the Fitbit data
+* S3 Bucket for personal files and processed Fitbit data
+* QuickSight dashboard
+* Lambda function with run time code that is triggered each Monday at 09.00 pm
+
+## Version control
+
+The code on the Main branch is the version of the project that is hosted on AWS on this moment.
+The code on the Develop branch is tested code but is not necessarily live.
+Feature branches are used to develop new features and when tested, it is merged to Develop
