@@ -137,7 +137,7 @@ def parsing_activities_data(myCredentials, targetBucket, weekDates, startDate, e
     for key in usefulInformation:
         activityRecord = pd.DataFrame()
         baseUrl = "https://api.fitbit.com/1.2/user/-/activities/" + key + "/date/"
-        response = getting_data(baseUrl , startDate, endDate)
+        response = getting_data(myCredentials, baseUrl , startDate, endDate)
         for i in range(len(weekDates)):
             try:
                 currentRecord = {}
