@@ -84,7 +84,7 @@ def parsing_sleep_data(myCredentials, targetBucket, weekDates, startDate, endDat
     """Parsing useful sleep information from API Response and saving it to targetBucket"""
     response = getting_data(myCredentials, "https://api.fitbit.com/1.2/user/-/sleep/date/" , startDate, endDate)
     mySleep = response['sleep']
-    myKeys = ['minutesAfterWakeup', 'minutesAsleep', 'minutesAwake', 'minutesToFallAsleep', 'startTime', 'timeInBed', 'efficiency', 'duration', 'dateOfSleep']
+    myKeys = ['minutesAfterWakeup', 'minutesAsleep', 'minutesAwake', 'minutesToFallAsleep', 'startTime', 'timeInBed', 'efficiency', 'duration']
     myRecords = pd.DataFrame()
     for i in range(len(weekDates)):
         try:                                            ## if for some reason data is missing for a record, we skip the day
