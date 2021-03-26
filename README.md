@@ -17,3 +17,10 @@ The infrastructure contains:
 The code on the Main branch is the version of the project that is hosted on AWS on this moment.
 The code on the Develop branch is tested code but is not necessarily live.
 Feature branches are used to develop new features and when tested, it is merged to Develop
+
+## To do:
+
+* Error handling in lambda function. Notify if function fails. Also send a notification if lambda functions succeeds.
+* Adding own health logs
+* Building QuickSight Dashboard
+* Naming of resources is inconsistent
