@@ -68,19 +68,20 @@ def read_process_and_write(targetBucket, fileKey, myRecords):
         write_data_to_S3(targetBucket, fileKey, myRecords)
 
 
-def getting_sleep_data(myCredentials, startDate, endDate):
-    """GET request for sleep data"""
+def getting_data(myCredentials, url, startDate, endDate):
+    """GET request for given url from startDate to endDate"""
     headers = {"Authorization" : "Bearer " + myCredentials["ACCES_TOKEN"]}
-    http_request_get_test = "https://api.fitbit.com/1.2/user/-/sleep/date/" + startDate + '/' + endDate + '.json'
+    http_request_get_test = url + startDate + '/' + endDate + '.json'
     response = requests.get(http_request_get_test, headers=headers)
     responseJson = response.json()
     return responseJson
     
 
-def parsing_sleep_data(response, targetBucket, weekDates, endDate):
-    """Parsing useful information from API Response and saving it to targetBucket"""
+def parsing_sleep_data(myCredentials, targetBucket, weekDates, startDate, endDate):
+    """Parsing useful sleep information from API Response and saving it to targetBucket"""
+    response = getting_data(myCredentials, "https://api.fitbit.com/1.2/user/-/sleep/date/" , startDate, endDate)
     mySleep = response['sleep']
-    myKeys = ['dateOfSleep', 'minutesAfterWakeup', 'minutesAsleep', 'minutesAwake', 'minutesToFallAsleep', 'startTime', 'timeInBed', 'efficiency', 'duration', 'dateOfSleep']
+    myKeys = ['minutesAfterWakeup', 'minutesAsleep', 'minutesAwake', 'minutesToFallAsleep', 'startTime', 'timeInBed', 'efficiency', 'duration', 'dateOfSleep']
     myRecords = pd.DataFrame()
     for i in range(len(weekDates)):
         try:                                            ## if for some reason data is missing for a record, we skip the day
@@ -88,6 +89,7 @@ def parsing_sleep_data(response, targetBucket, weekDates, endDate):
             day = mySleep[i]
             for key in myKeys:
                 currentRecord[key] = day[key]
+            currentRecord['date'] = day['dateOfSleep']
             currentRecord['minutesDeepSleep'] = day['levels']['summary']['deep']['minutes']
             currentRecord['minutesLightSleep'] = day['levels']['summary']['light']['minutes']
             currentRecord['minutesRemSleep'] = day['levels']['summary']['rem']['minutes']
@@ -95,15 +97,68 @@ def parsing_sleep_data(response, targetBucket, weekDates, endDate):
             myRecords = myRecords.append(currentRecord, ignore_index=True)
         except:
             continue
+    read_process_and_write(targetBucket, 'mySleepData.csv', myRecords)
     return myRecords
+
+
+def parsing_heart_rate_data(myCredentials, targetBucket, weekDates, startDate, endDate):
+    """Parsing useful heart rate information from API Response and saving it to targetBucket"""
+    response = getting_data(myCredentials, "https://api.fitbit.com/1.2/user/-/activities/heart/date/" , startDate, endDate)
+    myHeartRate = response['activities-heart']
+    myRecords = pd.DataFrame()
+    for i in range(len(weekDates)):
+        try:                                            ## if for some reason data is missing for a record, we skip the day
+            currentRecord = {}
+            currentRecord['date'] = myHeartRate[i]['dateTime']
+            day = myHeartRate[i]['value']
+            currentRecord['restingHeartRate'] = day['restingHeartRate']
+            currentRecord['minutesOutOfRange'] = day['heartRateZones'][0]['minutes']
+            currentRecord['caloriesOutOfRange'] = day['heartRateZones'][0]['caloriesOut']
+            currentRecord['minutesFatBurn'] = day['heartRateZones'][1]['minutes']
+            currentRecord['caloriesFatBurn'] = day['heartRateZones'][1]['caloriesOut']
+            currentRecord['minutesCardio'] = day['heartRateZones'][2]['minutes']
+            currentRecord['caloriesCardio'] = day['heartRateZones'][2]['caloriesOut']
+            currentRecord['minutesPeak'] = day['heartRateZones'][3]['minutes']
+            currentRecord['caloriesPeak'] = day['heartRateZones'][3]['caloriesOut']
+            myRecords = myRecords.append(currentRecord, ignore_index=True)
+        except:
+            continue
+    read_process_and_write(targetBucket, 'myHeartRateData.csv', myRecords)
+    return myRecords
+
+
+def parsing_activities_data(myCredentials, targetBucket, weekDates, startDate, endDate):
+    """Parsing useful activities information from API Response and saving it to targetBucket"""
+    """Activity API is build differently then the other APIs"""
+    usefulInformation = ['calories', 'caloriesBMR', 'steps', 'distance', 'floors', 'elevation', 'minutesSedentary',
+                        'minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive', 'activityCalories']
+    myRecords = pd.DataFrame()
+    myRecords['date'] = weekDates
+    for key in usefulInformation:
+        activityRecord = pd.DataFrame()
+        baseUrl = "https://api.fitbit.com/1.2/user/-/activities/" + key + "/date/"
+        response = getting_data(myCredentials, baseUrl , startDate, endDate)
+        for i in range(len(weekDates)):
+            try:
+                currentRecord = {}
+                jsonKey = 'activities-' + key
+                myActivity = response[jsonKey][i]
+                currentRecord[key] = myActivity['value']
+                activityRecord = activityRecord.append(currentRecord, ignore_index=True)
+            except:
+                continue
+        myRecords = pd.concat([myRecords, activityRecord], axis = 1)
+    read_process_and_write(targetBucket, 'myActivitiesData.csv', myRecords)
+    return myRecords
+        
 
 def lambda_handler(event, context):
     variabelen = event
     weekDates, startDate, endDate = getting_week_dates()
     myCredentials = read_data_from_S3_as_text(sourceBucket, fitbitCredentials)['CREDENTIALS']
-    response = getting_sleep_data(myCredentials, startDate, endDate)
-    mySleepRecords = parsing_sleep_data(response, targetBucket, weekDates, endDate)
-    contents = read_process_and_write(targetBucket, 'mySleepData.csv', mySleepRecords)
+    mySleepRecords = parsing_sleep_data(myCredentials, targetBucket, weekDates, startDate, endDate)
+    myHeartRateRecords = parsing_heart_rate_data(myCredentials, targetBucket, weekDates, startDate, endDate)
+    myActivityRecords = parsing_activities_data(myCredentials, targetBucket, weekDates, startDate, endDate)
     return {
         'statusCode': 200
     }
