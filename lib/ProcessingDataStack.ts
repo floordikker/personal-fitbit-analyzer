@@ -70,7 +70,7 @@ export class ProcessingDataStack extends cdk.Stack {
     props.bucket.grantReadWrite(myLambda);
 
     // Defined schedule
-    const mySchedule = events.Schedule.expression('cron(0 9 ? * 2#1 *)')
+    const mySchedule = events.Schedule.expression('cron(0 0 9 ? * MON *)')
     // target
     const LambdaTarget = new targets.LambdaFunction(myLambda);
     // Al together
