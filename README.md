@@ -12,6 +12,8 @@ The infrastructure contains:
 * QuickSight dashboard
 * Lambda function with run time code that is triggered each Monday at 09.00 pm
 
+The health data is saved on my personal computer and upload to S3 (same bucket as processed Fitbit data) by means of a CRON job every week at 09.00 am. The script that executes this and my personal health records are saved in the folder /scripts. 
+
 ## Version control
 
 The code on the Main branch is the version of the project that is hosted on AWS on this moment.
@@ -23,4 +25,3 @@ Feature branches are used to develop new features and when tested, it is merged 
 * Error handling in lambda function. Notify if function fails. Also send a notification if lambda functions succeeds.
 * Adding own health logs
 * Building QuickSight Dashboard
-* Naming of resources is inconsistent

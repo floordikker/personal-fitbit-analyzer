@@ -26,6 +26,7 @@ export class ProcessingDataStack extends cdk.Stack {
   
     // bucket with Fitbit credentials saved
     const sourceBucket = new s3.Bucket(this, "sourceBucket", {
+      bucketName: 'fd-fitbit-sourceBucket',
       versioned: false,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
