@@ -20,7 +20,7 @@ export class DataStorageStack extends cdk.Stack {
     // The code that defines your stack goes here
     // S3 + Quicksight
     const bucket = new s3.Bucket(this, "targetBucket", {
-      bucketName: 'fd-fitbit-targetBucket',
+      bucketName: 'fd-fitbit-targetbucket',
       versioned: true,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
