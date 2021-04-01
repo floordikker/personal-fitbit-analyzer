@@ -4,6 +4,10 @@ import * as events from '@aws-cdk/aws-events';
 import * as targets from '@aws-cdk/aws-events-targets';
 import * as s3 from '@aws-cdk/aws-s3'
 import * as s3deploy from '@aws-cdk/aws-s3-deployment';
+import * as sns from '@aws-cdk/aws-sns';
+import * as sqs from '@aws-cdk/aws-sqs';
+
+
 
 export interface ProcessingDataStackProps
     extends cdk.StackProps {
@@ -40,12 +44,15 @@ export class ProcessingDataStack extends cdk.Stack {
       retainOnDelete: false
     });
 
-
+    const myQueue = new sqs.Queue(this, 'DLQ', {
+      fifo: true
+  });
 
     const myLambda = new lambda.Function(this, 'Function', {
       runtime: lambda.Runtime.PYTHON_3_7,
       handler: 'lambda_function.lambda_handler',
       timeout: cdk.Duration.seconds(120), 
+      deadLetterQueue: myQueue,
       code: lambda.Code.fromAsset('resources/myLambdaFunctions', {
         bundling: {
           image: lambda.Runtime.PYTHON_3_7.bundlingDockerImage,
@@ -82,6 +89,8 @@ export class ProcessingDataStack extends cdk.Stack {
       targets: [LambdaTarget],
 
     });
+
+
 
   };
 }

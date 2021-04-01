@@ -25,17 +25,18 @@
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.90.1",
     "@aws-cdk/aws-dynamodb": "^1.90.1",
+    "@aws-cdk/aws-events": "^1.90.1",
+    "@aws-cdk/aws-events-targets": "^1.90.1",
     "@aws-cdk/aws-iam": "^1.90.1",
     "@aws-cdk/aws-kms": "^1.90.1",
     "@aws-cdk/aws-lambda": "^1.90.1",
     "@aws-cdk/aws-route53-targets": "^1.90.1",
     "@aws-cdk/aws-s3": "^1.90.1",
-    "@aws-cdk/aws-events": "^1.90.1",
-    "@aws-cdk/aws-events-targets": "^1.90.1",
     "@aws-cdk/aws-s3-deployment": "^1.90.1",
     "@aws-cdk/core": "^1.90.1",
     "change-case": "^4.1.2",
     "dotenv": "^8.2.0",
+    "i": "^0.3.6",
     "immutable": "^4.0.0-rc.12",
     "source-map-support": "^0.5.16"
   }

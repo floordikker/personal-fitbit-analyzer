@@ -181,7 +181,7 @@ def parsing_workout_data(myCredentials, targetBucket, weekDates):
 
 def lambda_handler(event, context):
     variabelen = event
-    weekDates, startDate, endDate = getting_week_dates()
+    weekDates, startDate, endDate = getting_week_dates('2021-01-01', '2021-03-29')
     myCredentials = read_data_from_sourceBucket(sourceBucket, fitbitCredentials)['CREDENTIALS']
     mySleepRecords = parsing_sleep_data(myCredentials, targetBucket, weekDates, startDate, endDate)
     myHeartRateRecords = parsing_heart_rate_data(myCredentials, targetBucket, weekDates, startDate, endDate)
