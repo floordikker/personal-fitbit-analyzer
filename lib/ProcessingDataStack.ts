@@ -45,6 +45,7 @@ export class ProcessingDataStack extends cdk.Stack {
     const myLambda = new lambda.Function(this, 'Function', {
       runtime: lambda.Runtime.PYTHON_3_7,
       handler: 'lambda_function.lambda_handler',
+      timeout: cdk.Duration.seconds(120), 
       code: lambda.Code.fromAsset('resources/myLambdaFunctions', {
         bundling: {
           image: lambda.Runtime.PYTHON_3_7.bundlingDockerImage,
