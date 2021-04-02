@@ -26,6 +26,7 @@ export class ProcessingDataStack extends cdk.Stack {
   
     // bucket with Fitbit credentials saved
     const sourceBucket = new s3.Bucket(this, "sourceBucket", {
+      bucketName: 'fd-fitbit-sourcebucket',
       versioned: false,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -44,6 +45,7 @@ export class ProcessingDataStack extends cdk.Stack {
     const myLambda = new lambda.Function(this, 'Function', {
       runtime: lambda.Runtime.PYTHON_3_7,
       handler: 'lambda_function.lambda_handler',
+      timeout: cdk.Duration.seconds(120), 
       code: lambda.Code.fromAsset('resources/myLambdaFunctions', {
         bundling: {
           image: lambda.Runtime.PYTHON_3_7.bundlingDockerImage,
@@ -70,7 +72,7 @@ export class ProcessingDataStack extends cdk.Stack {
     props.bucket.grantReadWrite(myLambda);
 
     // Defined schedule
-    const mySchedule = events.Schedule.expression('cron(0 9 ? * 2#1 *)')
+    const mySchedule = events.Schedule.expression('cron(0 9 ? * MON *)')
     // target
     const LambdaTarget = new targets.LambdaFunction(myLambda);
     // Al together
