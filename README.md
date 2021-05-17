@@ -1,13 +1,12 @@
 # My own fitbit dasbhoard on AWS QuickSight
 
-This project contains code to set up a dashboard containing FitBit data and personal health data.
-The goal of this project has been to provide more insight into long term correlations and see whether trends exists.
+This project contains code to set up a dashboard containing FitBit data and personal health data. By means of combining the data FitBit logs and the data that I keep track of, I am hoping to gain more insight into long term correlations and see whether trends exists.
 
 ## Set up
 
 The infrastructure is written in Typescript and the runtime code is written in Python. 
 The infrastructure contains:
-* S3 Bucket to host data needed to interact with the Fitbit data
+* S3 Bucket to host data needed to interact with the Fitbit API
 * S3 Bucket for personal files and processed Fitbit data
 * QuickSight dashboard
 * Lambda function with run time code that is triggered each Monday at 09.00 pm
